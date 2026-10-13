@@ -1,5 +1,5 @@
 /**
- * WATW IDEA INBOX — Google Sheet Empfänger v1.1.0
+ * WATW IDEA INBOX — Google Sheet Empfänger v1.1.1
  * Containergebundenes Script: Erweiterungen > Apps Script im eigenen Google Sheet.
  * Nach Einfügen einmal setupIdeaInbox() ausführen und das Ausführungsprotokoll öffnen.
  * Das Protokoll zeigt beim ERSTEN Ausführen den neu erzeugten privaten Schlüssel.
@@ -100,6 +100,10 @@ function styleIdeas_(s) {
 
 function styleOverview_(s) {
   const wine = '#783249', dark = '#272B31', pale = '#F7F1F3';
+  // Bei deutschen und anderen Komma-Dezimal-Locale erwartet Sheets Semikola als Formel-Trenner.
+  const locale = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetLocale();
+  const semicolonLocale = /^(de|fr|it|es|pt|nl|pl|ru|tr|cs|sk|sl|hu|ro|bg|el|hr|sr|uk|lt|lv|et|fi|sv|da|nb|nn)(_|-|$)/i.test(locale);
+  const localFormula = formula => semicolonLocale ? formula.replace(/,/g, ';') : formula;
   s.setTabColor(wine);
   const area = s.getRange('A1:H44');
   area.breakApart();
@@ -123,7 +127,7 @@ function styleOverview_(s) {
   cards.forEach(([left,right,label,formula]) => {
     s.getRange(left+'5:'+right+'5').merge().setValue(label).setBackground(pale)
       .setFontColor('#715161').setFontWeight('bold');
-    s.getRange(left+'6:'+right+'7').merge().setFormula(formula)
+    s.getRange(left+'6:'+right+'7').merge().setFormula(localFormula(formula))
       .setBackground(pale).setFontColor(wine).setFontWeight('bold').setFontSize(23);
   });
   s.getRange('A9:H9').merge().setValue('IDEEN NACH BEREICH · STATUS · AUTOR')
@@ -143,13 +147,13 @@ function styleOverview_(s) {
     .setBackground('#EDE0E5').setFontWeight('bold'));
 
   s.getRange(13,1,AREAS.length,1).setValues(AREAS.map(n=>[n]));
-  AREAS.forEach((_,i) => s.getRange(i+13,2).setFormula('=COUNTIF(\'Ideen\'!G2:G,A'+(i+13)+')'));
+  AREAS.forEach((_,i) => s.getRange(i+13,2).setFormula(localFormula('=COUNTIF(\'Ideen\'!G2:G,A'+(i+13)+')')));
   const statuses=['Inbox','Prüfen','Geplant','In Arbeit','Erledigt','Verworfen'];
   s.getRange(13,4,statuses.length,1).setValues(statuses.map(n=>[n]));
-  statuses.forEach((_,i) => s.getRange(i+13,5).setFormula('=COUNTIF(\'Ideen\'!J2:J,D'+(i+13)+')'));
+  statuses.forEach((_,i) => s.getRange(i+13,5).setFormula(localFormula('=COUNTIF(\'Ideen\'!J2:J,D'+(i+13)+')')));
   s.getRange('G13:G14').setValues([['Birgit'],['Thomas']]);
-  s.getRange('H13').setFormula('=COUNTIF(\'Ideen\'!D2:D,G13)');
-  s.getRange('H14').setFormula('=COUNTIF(\'Ideen\'!D2:D,G14)');
+  s.getRange('H13').setFormula(localFormula('=COUNTIF(\'Ideen\'!D2:D,G13)'));
+  s.getRange('H14').setFormula(localFormula('=COUNTIF(\'Ideen\'!D2:D,G14)'));
   ['A13:B19','D13:E18','G13:H14'].forEach(r => s.getRange(r).setBackground('#FCF8F9'));
   ['B13:B19','E13:E18','H13:H14'].forEach(r => s.getRange(r).setHorizontalAlignment('center'));
 
