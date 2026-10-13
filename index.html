@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#783249">
+  <meta name="description" content="WATW Ideen unterwegs sammeln – lokal und offline.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WATW Ideas">
+  <title>WATW Idea Inbox</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><img src="icons/idea-bulb-logo.png" alt=""></div>
+        <div><div class="brand-name">WINE ALL THE WAY</div><div class="brand-sub">IDEA INBOX</div></div>
+      </div>
+      <button class="icon-button" id="settings-open" aria-label="Einstellungen öffnen" title="Einstellungen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M4.2 4.2l1.4 1.4m12.8 12.8 1.4 1.4M3 12h2m14 0h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">FESTHALTEN, WENN ES EINFÄLLT</div>
+        <h1>Ein guter Gedanke<br><em>passt immer rein.</em></h1>
+        <p>Schreib auf, was dir gerade durch den Kopf geht. Die Ideen bleiben zunächst auf diesem iPhone.</p>
+        <div id="online-indicator" class="connectivity" aria-live="polite">● Lokal gespeichert</div>
+      </section>
+
+      <section class="panel compose" aria-labelledby="compose-title">
+        <div class="section-header"><h2 id="compose-title">Neue Idee</h2><span id="editing-label" class="tiny-note"></span></div>
+        <form id="note-form">
+          <label for="note-text" class="field-label">Dein Gedanke <span class="required">*</span></label>
+          <textarea id="note-text" placeholder="Ein Gedanke für WATW … Tippe hier oder nutze das Mikrofon deiner iPhone-Tastatur." rows="6" maxlength="30000" required></textarea>
+          <p class="field-hint">Zum Diktieren: Textfeld antippen und Mikrofon auf der iPhone-Tastatur wählen.</p>
+          <div class="choice-section">
+            <div class="field-label" id="note-category-label">Bereich</div>
+            <input type="hidden" id="note-category" value="Sonstiges">
+            <div class="choice-group choice-categories" role="group" aria-labelledby="note-category-label">
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Quiz &amp; Produkte" aria-pressed="false">Quiz &amp; Produkte</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Guides &amp; MAG" aria-pressed="false">Guides &amp; MAG</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Marketing &amp; Social Media" aria-pressed="false">Marketing &amp; Social</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Website &amp; Technik" aria-pressed="false">Website &amp; Technik</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Wein &amp; Reisen" aria-pressed="false">Wein &amp; Reisen</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Business &amp; Partnerschaften" aria-pressed="false">Business &amp; Partner</button>
+              <button type="button" class="choice-button" data-choice-for="note-category" data-choice-value="Sonstiges" aria-pressed="true">Sonstiges</button>
+            </div>
+          </div>
+          <div class="choice-section author-section">
+            <div class="field-label" id="note-author-label">Erfasst von <span class="required">*</span></div>
+            <input type="hidden" id="note-author" value="">
+            <div class="choice-group choice-authors" role="group" aria-labelledby="note-author-label">
+              <button type="button" class="choice-button" data-choice-for="note-author" data-choice-value="Birgit" aria-pressed="false">Birgit</button>
+              <button type="button" class="choice-button" data-choice-for="note-author" data-choice-value="Thomas" aria-pressed="false">Thomas</button>
+            </div>
+            <p class="field-hint author-hint">Die Auswahl bleibt auf diesem iPhone voreingestellt.</p>
+          </div>
+          <label for="note-title" class="field-label">Titel <span class="optional">(optional)</span></label>
+          <input id="note-title" type="text" maxlength="140" placeholder="Sonst wird der Titel automatisch erzeugt">
+          <div class="form-actions"><button id="cancel-edit" type="button" class="button button-muted hidden">Abbrechen</button><button type="submit" id="save-note" class="button button-primary button-wide"><span id="save-label">Idee speichern</span><span aria-hidden="true">↗</span></button></div>
+        </form>
+      </section>
+
+      <section class="notes-section" aria-labelledby="notes-title">
+        <div class="section-header notes-header"><div><div class="eyebrow">DEINE SAMMLUNG</div><h2 id="notes-title">Notizen <span id="total-count" class="count-pill">0</span></h2></div><button class="button button-outline sync-button" id="sync-button" type="button">↑ <span id="sync-label">Übertragen</span></button></div>
+        <div class="segmented" role="group" aria-label="Notizenfilter"><button type="button" class="active" data-filter="pending">Offen <span id="pending-count">0</span></button><button type="button" data-filter="synced">Übertragen <span id="synced-count">0</span></button><button type="button" data-filter="all">Alle</button></div>
+        <div class="tool-row"><input type="search" id="note-search" placeholder="Notizen durchsuchen …" aria-label="Notizen durchsuchen"><button type="button" class="button button-quiet" id="clean-synced">Aufräumen</button></div>
+        <div id="note-list" class="note-list" aria-live="polite"></div>
+      </section>
+      <footer>WATW Idea Inbox <span id="version"></span> · lokal auf diesem Gerät</footer>
+    </main>
+  </div>
+
+  <dialog id="settings-dialog" class="settings-dialog">
+    <div class="dialog-inner">
+      <div class="section-header"><h2>Einstellungen</h2><button type="button" class="icon-button close-x" id="settings-close" aria-label="Schließen">×</button></div>
+      <p class="dialog-intro">Diese Einstellungen gelten nur für dieses iPhone. Das Google Sheet wird von beiden Geräten gemeinsam genutzt.</p>
+      <div class="field-label" id="settings-author-label">Standardautor</div>
+      <input type="hidden" id="settings-author" value="">
+      <div class="choice-group choice-authors" role="group" aria-labelledby="settings-author-label">
+        <button type="button" class="choice-button" data-choice-for="settings-author" data-choice-value="Birgit" aria-pressed="false">Birgit</button>
+        <button type="button" class="choice-button" data-choice-for="settings-author" data-choice-value="Thomas" aria-pressed="false">Thomas</button>
+      </div>
+      <hr>
+      <h3>Google Sheet verbinden</h3>
+      <p class="field-hint">Die Apps-Script-Adresse und der private Schlüssel werden nur auf diesem Gerät gespeichert – nicht auf GitHub.</p>
+      <label class="field-label" for="settings-url">Apps Script Web-App URL</label><input id="settings-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec">
+      <label class="field-label" for="settings-key">Privater Schlüssel</label><input id="settings-key" type="password" autocomplete="off" spellcheck="false" placeholder="Langer privater Schlüssel">
+      <div class="inline-actions"><button type="button" class="button button-primary" id="save-settings">Einstellungen speichern</button><button type="button" class="button button-muted" id="clear-connection">Verbindung entfernen</button></div>
+      <hr>
+      <h3>Lokale Sicherung</h3>
+      <p class="field-hint">Notizen als JSON sichern oder aus einer Sicherung wiederherstellen. Verbindungsschlüssel werden nicht exportiert.</p>
+      <div class="inline-actions"><button type="button" class="button button-outline" id="export-backup">Backup exportieren</button><button type="button" class="button button-outline" id="import-backup">Backup importieren</button><input id="backup-file" type="file" accept="application/json,.json" hidden></div>
+      <p class="settings-warning">Hinweis: Eine auf dem Home-Bildschirm installierte iPhone-Web-App kann einen eigenen lokalen Speicher verwenden. Bitte möglichst immer dieselbe App-Installation nutzen und regelmäßig übertragen oder sichern.</p>
+    </div>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title">
+    <div class="dialog-inner"><h2 id="confirm-title">Notiz löschen?</h2><p id="confirm-message"></p><div class="inline-actions confirm-actions"><button type="button" class="button button-muted" id="confirm-cancel">Abbrechen</button><button type="button" class="button button-danger" id="confirm-yes">Löschen</button></div></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
